@@ -4,7 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,16 +16,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    //User user;
-    private final String TAG="FireBase";
+    User user;
+
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference reference_contacts;
     EditText et1, et2;
-    int count=0;
+    ListView lv;
+
+    private final String TAG="FireBase";
+    private final String NAME="name";
+    private final String AGE="age";
+    static long count=0;
+    //ArrayAdapter<String> adapter;
+    SimpleAdapter adapter;
+    //private ArrayList<User> list = new ArrayList<>();
+    ArrayList<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         et1 = (EditText)findViewById(R.id.editText1);
         et2 = (EditText)findViewById(R.id.editText2);
+        lv = (ListView)findViewById(R.id.listView);
         //===========write data==============
-        //myRef.setValue("Hello, World!");
-        //writeNewUser("1234", "Jimmy", 46);
+//        myRef.setValue("Hello, World!");
+//        writeNewUser(1234, "Jimmy", 46);
 //        String[] id={"1", "2"};
 //        User[] users = new User[id.length];
 //        for(int i=0;i<users.length;i++)
@@ -46,25 +60,38 @@ public class MainActivity extends AppCompatActivity {
 //
 //        for(int i=0;i<users.length;i++)
 //            writeNewUser((i+1), users[i].getName(), users[i].getAge());
+//        adapter = new ArrayAdapter<User>(this,
+//                        android.R.layout.simple_list_item_1,
+//                        android.R.id.text1);
+
+        adapter = new SimpleAdapter(
+                this,
+                list,
+                android.R.layout.simple_list_item_2,
+                new String[] { NAME, AGE },
+                new int[] { android.R.id.text1, android.R.id.text2 } );
+
         reference_contacts = FirebaseDatabase.getInstance().getReference("users");
         reference_contacts.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren() ){
+                    HashMap<String,String> item = new HashMap<String,String>();
+                    item.put( NAME, ds.child(NAME).getValue().toString());
+                    item.put( AGE,ds.child(AGE).getValue().toString());
                     //adapter.add(ds.child("name").getValue().toString());
-                    User user = ds.getValue(User.class);
-                    //count++;
-                    Log.d("Name", user.getName());
-                    Log.d("Age", ""+user.getAge());
+                    user = ds.getValue(User.class);
+                    list.add(item);
+                    lv.setAdapter(adapter);
                 }
+                count = dataSnapshot.getChildrenCount();
+                Log.d("Count", "count="+count+" getKey="+dataSnapshot.getKey());
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
-
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,25 +109,20 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
     //一次寫進一個Object物件資料
-    private void writeNewUser(int userId, String name, int age) {
+    private void writeNewUser(long userId, String name, int age) {
         User user = new User(name, age);
         reference_contacts.child(""+userId).setValue(user);
     }
 
-    private ArrayList<User> list = new ArrayList<>();
-
     public void onClick(View v)   {
         switch(v.getId()) {
             case R.id.button2:
-                //user = new User();
                 String name = et1.getText().toString();
                 String age = et2.getText().toString();
-//                if (!name.equals(""))
-//                    user.setName(name);
-//                if (!age.equals(""))
-//                    user.setAge(Integer.valueOf(age));
-                //Log.d("DATA", user.getName()+" "+user.getAge());
-                writeNewUser(4, name, Integer.valueOf(age));
+                if (!name.equals("") && !age.equals(""))
+                    writeNewUser(count+1, name, Integer.valueOf(age));
+                et1.setText("");
+                et2.setText("");
                 break;
             case R.id.button3:
 

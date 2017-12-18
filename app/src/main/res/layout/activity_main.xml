@@ -10,10 +10,10 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         android:onClick="onClick"
-        android:text="Button"
+        android:text="Add Data"
         app:layout_constraintStart_toEndOf="@+id/editText1"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,11 +45,20 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="280dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         android:onClick="onClick"
-        android:text="GetData"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="Get Data"
+        app:layout_constraintStart_toEndOf="@+id/editText2"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="368dp"
+        android:layout_height="261dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText2" />
 
 </android.support.constraint.ConstraintLayout>
