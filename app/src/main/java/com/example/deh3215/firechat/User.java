@@ -7,7 +7,7 @@ package com.example.deh3215.firechat;
 public class User {
     private String name ;
     private int age ;
-    public int count;
+    //public int count;
 
     public User() {
     }
@@ -17,9 +17,9 @@ public class User {
         this.age = age;
     }
 
-    public int getCount()   {
-        return count;
-    }
+//    public int getCount()   {
+//        return count;
+//    }
 
     public int getAge() {
         return age;

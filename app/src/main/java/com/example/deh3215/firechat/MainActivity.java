@@ -16,12 +16,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    User user;
+    //User user;
     private final String TAG="FireBase";
     FirebaseDatabase database;
     DatabaseReference myRef;
+    DatabaseReference reference_contacts;
     EditText et1, et2;
-    static int count=0;
+    int count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,26 +46,24 @@ public class MainActivity extends AppCompatActivity {
 //
 //        for(int i=0;i<users.length;i++)
 //            writeNewUser((i+1), users[i].getName(), users[i].getAge());
-        DatabaseReference reference_contacts = FirebaseDatabase.getInstance().getReference("users");
+        reference_contacts = FirebaseDatabase.getInstance().getReference("users");
         reference_contacts.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren() ){
                     //adapter.add(ds.child("name").getValue().toString());
                     User user = ds.getValue(User.class);
-
-                    count++;
-
+                    //count++;
                     Log.d("Name", user.getName());
                     Log.d("Age", ""+user.getAge());
                 }
-                user.count=count;
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
 
 //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -84,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
     }
     //一次寫進一個Object物件資料
     private void writeNewUser(int userId, String name, int age) {
-        user = new User(name, age);
-        myRef.child("users").child(""+userId).setValue(user);
+        User user = new User(name, age);
+        reference_contacts.child(""+userId).setValue(user);
     }
 
     private ArrayList<User> list = new ArrayList<>();
@@ -93,15 +92,15 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View v)   {
         switch(v.getId()) {
             case R.id.button2:
-                user = new User();
+                //user = new User();
                 String name = et1.getText().toString();
                 String age = et2.getText().toString();
-                if (!name.equals(""))
-                    user.setName(name);
-                if (!age.equals(""))
-                    user.setAge(Integer.valueOf(age));
-
-                writeNewUser(3, user.getName(), user.getAge());
+//                if (!name.equals(""))
+//                    user.setName(name);
+//                if (!age.equals(""))
+//                    user.setAge(Integer.valueOf(age));
+                //Log.d("DATA", user.getName()+" "+user.getAge());
+                writeNewUser(4, name, Integer.valueOf(age));
                 break;
             case R.id.button3:
 
