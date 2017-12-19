@@ -13,6 +13,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -92,26 +93,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                //String value = dataSnapshot.getValue(String.class);
-//                //Log.d(TAG, "Value is: " + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Log.w(TAG, "Failed to read value.", error.toException());
-//            }
-//        });
     }
     //一次寫進一個Object物件資料
     private void writeNewUser(long userId, String name, int age) {
         User user = new User(name, age);
         reference_contacts.child(""+userId).setValue(user);
+    }
+
+    private void removeUser(long userId, String name, int age)   {
+         //User user = new User(name, age);
+         //reference_contacts.child(""+userId).remove();
     }
 
     public void onClick(View v)   {
@@ -124,11 +115,24 @@ public class MainActivity extends AppCompatActivity {
                 et1.setText("");
                 et2.setText("");
                 break;
-            case R.id.button3:
-
+            case R.id.button4:
+                String str = et1.getText().toString();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                Query applesQuery = ref.child("users").orderByChild("name").equalTo(str);
+                applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().removeValue();
+                        }
+                        lv.setAdapter(adapter);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled", databaseError.toException());
+                    }
+                });
                 break;
         }
     }
-
-
 }
